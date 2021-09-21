@@ -1,0 +1,46 @@
+#!/bin/bash
+if [$# eq 0]
+then 
+echo "Novalues"
+else
+#sudo service cassandra start
+_NODETOOL=nodetool
+_LOCAL=$5
+_date=$3
+#2020-05-17
+_KEYSPACE=$1
+_table=$2
+_back_table=$4
+#recuperation
+_BACKUP_DIR=Documents/backup/$_date/SNAPSHOTS/$_KEYSPACE
+_DATA_DIR=/var/lib/cassandra/data/$_KEYSPACE
+_TABLE_BACK=$(find $_DATA_DIR -type d -name $_back_table\*)
+_TABLE_DIR=$(find $_BACKUP_DIR -type d -name $_table\*)
+_SNAPSHOT_DIR=$(find $_TABLE_DIR -type d -name snp\*)
+#echo $_SNAPSHOT_DIR
+#echo $_TABLE_BACK
+
+#chmod +w $_TABLE_BACK 
+#sudo rm -rf "/var/lib/cassandra/data/test1/emp1r-85afe60093e611eaa6c5c3744c7589c1/snp-2020-05-11-17-00-24";
+#copier les fichier dans snapshot
+sudo cp -f "$_SNAPSHOT_DIR/manifest.json" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-CompressionInfo.db" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-Data.db" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-Digest.crc32" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-Filter.db" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-Index.db" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-Statistics.db" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-Summary.db" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/md-1-big-TOC.txt" "$_TABLE_BACK";
+sudo cp -f "$_SNAPSHOT_DIR/schema.cql" "$_TABLE_BACK" ;
+#refresh nodetool
+sudo $_NODETOOL refresh $_KEYSPACE  $_back_table
+
+cqlsh -e "use $_KEYSPACE;select * from $_back_table;" > affichage
+
+echo $1 $2 $3 $4 $5 >res
+fi
+
+
+
+

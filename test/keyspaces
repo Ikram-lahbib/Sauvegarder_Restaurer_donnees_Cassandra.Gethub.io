@@ -1,0 +1,11 @@
+#!/bin/bash
+#_DATA_DIR=/var/lib/cassandra/data
+if [ $# eq 0]
+then echo "no value"
+else 
+#_KEY=$1
+sudo service cassandra start
+sudo cqlsh localhost
+cqlsh -e "CREATE KEYSPACE $1 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'};"
+#_RES=$_KEY > res
+fi

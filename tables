@@ -1,0 +1,12 @@
+#!/bin/bash
+#_DATA_DIR=/var/lib/cassandra/data
+sudo service cassandra start
+sudo cqlsh localhost
+#cqlsh -e "use key3;"
+#cqlsh -e "use key3;create table tab3(id int primary key);insert into tab3(id) values(2)"
+#cqlsh -e "use key3;insert into tab3(id) values(2);"
+if [$# eq 0]
+then echo "no value"
+else 
+cqlsh -e "use $1;create table  $2 ($3 PRIMARY KEY($4));"
+fi
